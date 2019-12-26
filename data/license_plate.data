@@ -1,0 +1,6 @@
+classes=1
+train=C:\Users\user\yolov3\license_plate_data\license_plate_train.txt
+valid=C:\Users\user\yolov3\license_plate_data\license_plate_val.txt
+names=data/license_plate.names
+backup=backup/
+eval=coco
