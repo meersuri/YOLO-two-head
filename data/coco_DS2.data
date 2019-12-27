@@ -1,6 +1,0 @@
-classes=2
-train=C:\Users\user\yolov3\DS2\DS2_train.txt
-valid=C:\Users\user\yolov3\DS2\DS2_val.txt
-names=data/coco_DS2.names
-backup=backup/
-eval=coco
