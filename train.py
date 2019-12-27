@@ -102,11 +102,13 @@ def train():
 
     # Initialize model
     model = Darknet(cfg, arc=opt.arc).to(device)
-
+    
+    
     # Optimizer
     pg0, pg1 = [], []  # optimizer parameter groups
     for k, v in dict(model.named_parameters()).items():
         if int(k.split('.')[1]) in yolo_arch[arch]: #send only new layer params to the optimizer
+            print(k, 'added to optimizer')
             if 'Conv2d.weight' in k:
                 pg1 += [v]  # parameter group 1 (apply weight_decay)
             else:
@@ -237,6 +239,8 @@ def train():
                                              pin_memory=True,
                                              collate_fn=dataset.collate_fn)
 
+     
+    
     # Start training
     model.nc = nc  # attach number of classes to model
     model.arc = opt.arc  # attach yolo architecture
@@ -251,7 +255,13 @@ def train():
     for epoch in range(start_epoch, epochs):  # epoch ------------------------------------------------------------------
         model.train()
         print(('\n' + '%10s' * 8) % ('Epoch', 'gpu_mem', 'GIoU', 'obj', 'cls', 'total', 'targets', 'img_size'))
-
+        
+        #Freeze mean and var of pre-trained batch norm layers
+        for m in model.modules():
+            if isinstance(m, nn.BatchNorm2d):
+                m.eval()
+                # print(m)
+        
         # Freeze backbone at epoch 0, unfreeze at epoch 1 (optional)
         freeze_backbone = False
         if freeze_backbone and epoch < 2:
